@@ -10,6 +10,17 @@
         "firebase-debug.*.log",
         "*.local"
       ]
+    },
+    {
+      "source": "python",
+      "codebase": "python",
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
     }
   ]
 }
