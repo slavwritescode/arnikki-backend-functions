@@ -10,6 +10,7 @@
 const {onRequest, onCall} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const admin = require('firebase-admin');
+
 if (!admin.apps.length) {
   admin.initializeApp();
 }
@@ -36,6 +37,8 @@ exports.registerNewUser = onCall( async({data})=> {
   logger.log(data, 'is the data');
   logger.log(data.name)
   let userInitialCheck;
+  const db = admin.database();
+  const root = 'lastModerator';
   try {
     userInitialCheck = await admin.auth().getUserByEmail(data['email']);
   } catch (error) {
@@ -52,7 +55,10 @@ exports.registerNewUser = onCall( async({data})=> {
         name: data['name'],
         password: data['password'],
       })
-      return { uid: user.uid, email: data['email'], name: data['name'], role: data['role'] };
+      
+      const moderatorRunningId = await db.ref(`/${root}/`).transaction((currentValue) => (currentValue) + 1)
+      .then(result => result.snapshot.val());
+      return { uid: user.uid, email: data['email'], name: data['name'], role: data['role'], userId: moderatorRunningId };
     }
     
   } catch (error) {
