@@ -63,7 +63,10 @@ def upload_video(req: https_fn.Request) -> https_fn.Response:
             
             moderator = int(req.form.get('moderator', None))
             
-            db.reference('videos/'+new_file_name).set({'date':date, 'moderator':moderator})
+            # db.reference('videos/'+ moderator).set({'date':date})
+            # db.reference('videos/' + str(moderator)).push({new_file_name: {'date':date}})
+            db.reference('videos/' + str(moderator)).child(new_file_name).set({'date': date})
+            
 
             return https_fn.Response(json.dumps({'uploadIsDone':True}), mimetype="application/json", status=200)
 
